@@ -1,15 +1,17 @@
 import javafx.collections.ArrayChangeListener;
 import javafx.util.Pair;
 import org.opencv.core.*;
+import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.videoio.VideoCapture;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.opencv.calib3d.Calib3d.findHomography;
-import static org.opencv.highgui.HighGui.imshow;
-import static org.opencv.highgui.HighGui.waitKey;
+import static org.opencv.highgui.HighGui.*;
 import static org.opencv.imgcodecs.Imgcodecs.imread;
 import static org.opencv.imgcodecs.Imgcodecs.imwrite;
 import static org.opencv.imgproc.Imgproc.*;
@@ -82,6 +84,31 @@ public class Main {
 //        return combinedLines;
 //    }
 
+    //typy figurek
+    //předpona B pro černé a W pro bílé (diakritika)
+    //0 - prázdné pole (empty)
+    //1 - pěšák (pawn)
+    //2 - král (king)
+    //3 - královna (queen)
+    //4 - střelec (bishop)
+    //5 - kůň (knight)
+    //6 - věž (rook)
+
+    /*pohled z boku odkud je foceno - pouze pro účely tvorby datasetu*/
+    public static String[] figures = {
+            "W6", "W1", "0", "0", "0", "0", "B1", "B6",
+            "W5", "W1", "0", "0", "0", "0", "B1", "B5",
+            "W4", "W1", "0", "0", "0", "0", "B1", "B4",
+            "W3", "W1", "0", "0", "0", "0", "B1", "B2",
+            "W2", "W1", "0", "0", "0", "0", "B1", "B3",
+            "W4", "W1", "0", "0", "0", "0", "B1", "B4",
+            "W5", "W1", "0", "0", "0", "0", "B1", "B5",
+            "W6", "W1", "0", "0", "0", "0", "B1", "B6"
+    };
+
+    public static final int RECTIFIED_WIDTH = 850;
+    public static final int RECTIFIED_HEIGHT = 850;
+
     public static double average(ArrayList<Double> list){
         Double sum = 0.0;
         if(!list.isEmpty()) {
@@ -120,7 +147,6 @@ public class Main {
     private static Mat AutoCannyDetection(Mat m, double sigma,  boolean show){
         Mat mCanny = new Mat();
         Mat mDst = new Mat();
-        Mat mSorted = new Mat();
 
         double highThresh = Imgproc.threshold(m, mDst, 0, 255, THRESH_BINARY + THRESH_OTSU);
         double lowThresh = 0.5*highThresh;
@@ -228,7 +254,7 @@ public class Main {
 
 
     /*------------------houghova transformace--------------------*/
-    public static ArrayList<Point> DetectCorners(Mat m, boolean show) {
+    public static ArrayList<Point> DetectCorners(Mat m, boolean show, int fNum) {
         Mat mHough = m.clone();
         Imgproc.cvtColor(m, mHough, Imgproc.COLOR_GRAY2BGR);
 
@@ -396,8 +422,10 @@ public class Main {
             return p1.x > p2.x ? 1 : -1;
         });
 
+
+
         //vybira se tech 8 spravnych
-        double prevDist = 0;
+        /*double prevDist = 0;
         for(int i = 0; i < horizontalLines.size()-1; i++){
             if (i == 8){
                 break;
@@ -405,7 +433,7 @@ public class Main {
             Pair<Point, Point> line1 = horizontalLines.get(i);
             Pair<Point, Point> line2 = horizontalLines.get(i+1);
             double dist = Math.abs(line1.getKey().y - line2.getKey().y);
-            System.out.println("i = " + i + "   " + dist);
+            //System.out.println("i = " + i + "   " + dist);
 
             if (prevDist == 0 & dist > 70.0){
                 horizontalLines.remove(horizontalLines.get(i));
@@ -416,11 +444,7 @@ public class Main {
                 horizontalLines.remove(horizontalLines.get(i+1));
                 i--;
             }
-        }
-
-        //horizontalLines = new ArrayList<Pair<Point, Point>> (horizontalLines.subList(0,7));
-
-        System.out.println(horizontalLines);
+        }*/
 
         Imgproc.line(mHough, horizontalLines.get(0).getKey(), horizontalLines.get(0).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
         Imgproc.line(mHough, horizontalLines.get(horizontalLines.size()-1).getKey(), horizontalLines.get(horizontalLines.size()-1).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
@@ -473,7 +497,8 @@ public class Main {
         Imgproc.circle(mHough, corners.get(3), 10, new Scalar(0,255,0), -1);
 
         if (show) {
-            imshow("Hough Transform", mHough);
+            imshow("Hough Transform"+fNum, mHough);
+            waitKey();
         }
 
         return corners;
@@ -492,7 +517,7 @@ public class Main {
     /*----------------houghova transformace end-------------------*/
 
 /*------------------------rektifikace-------------------------*/
-    public static Mat Rectification(Mat m, ArrayList<Point> corners, boolean show){
+    public static Mat Rectification(Mat m, ArrayList<Point> corners, boolean show, int fNum){
         Point [] srcArray = new Point[4];
         srcArray[0] = new Point(corners.get(0).x, corners.get(0).y);
         srcArray[1] = new Point(corners.get(1).x, corners.get(1).y);
@@ -501,10 +526,13 @@ public class Main {
 
         LinkedList<Point> dstArray = new LinkedList<>();
 
-        dstArray.add(new Point(100,100));
-        dstArray.add(new Point(950, 100));
-        dstArray.add(new Point(100,950));
-        dstArray.add(new Point(950, 950));
+        int x = 100;
+        int y = 100;
+
+        dstArray.add(new Point(x,y));
+        dstArray.add(new Point(x + RECTIFIED_WIDTH, y));
+        dstArray.add(new Point(x,y + RECTIFIED_HEIGHT));
+        dstArray.add(new Point(x + RECTIFIED_WIDTH, y + RECTIFIED_HEIGHT));
 
         MatOfPoint2f dst = new MatOfPoint2f();
         dst.fromList(dstArray);
@@ -517,7 +545,8 @@ public class Main {
         warpPerspective(m, mRectified, homography, new Size(m.cols(), m.rows()));
         //TODO udělat obrázek menší (podle velikosti šachovnice)
         if(show){
-            imshow("Rectified", mRectified);
+            imshow("Rectified_"+fNum, mRectified);
+            waitKey();
         }
         return mRectified;
     }
@@ -614,42 +643,168 @@ public class Main {
         return result;
     }
 
+    /*predpoklada REKTIFIKOVANY OBRAZEK*/
+    public static void cutSquares2(Mat m, ArrayList<Point> corners){
+        ArrayList<Rect> squares = new ArrayList<>();
+
+//        Point[] cornersSorted = new Point[4];
+//        for (Point corner: corners){ //serazeni rohu - VLEVO NAHORE JE PRVNI A PAK PO SMERU HOD. RUCICEK
+//            if (corner.x < m.width()/2.0){
+//                if (corner.y < m.height()/2.0){
+//                    cornersSorted[0] = corner;
+//                } else {
+//                    cornersSorted[2] = corner;
+//                }
+//            } else {
+//                if (corner.y < m.height()/2.0){
+//                    cornersSorted[1] = corner;
+//                } else {
+//                    cornersSorted[3] = corner;
+//                }
+//            }
+//        }
+
+        int squareSize = RECTIFIED_WIDTH/8;
+        double[] heightQuantifiers = {2,2.5,2.5,3,3,3,3.5,3.5};
+        double[] widthQuantifiers = {1.2,1.3,1.4,1.5,1.6,1.6,1.8,2};
+        for (int i = 0; i<8; i++){
+            for (int j = 0; j<8; j++){
+                //Rect r = new Rect(100+j*squareSize, 100+i*squareSize, (int) (squareSize*widthQuantifiers[7-i]), (int) (squareSize*heightQuantifiers[7-i]));
+                Rect r = new Rect(100+j*squareSize, 100+i*squareSize, squareSize, squareSize);
+                squares.add(r);
+            }
+        }
+
+        int i = 0;
+        for (Rect square: squares){
+            Mat s = m.submat(square);
+            imwrite("D:/School/2MIT/DP/data/test/" + i +".jpg", s);
+            i++;
+        }
+//        int i = 0;
+//        for (Rect square: squares){
+//            Mat s = m.submat(square);
+//            int index = new File("D:/School/2MIT/DP/data/" + figures[i]).list().length;
+//            imwrite("D:/School/2MIT/DP/data/" + figures[i] + index +".jpg", s);
+//            i++;
+//        }
+
+    }
+
+    public static void processImage(Mat frame, int i){
+        Mat totalOriginal = new Mat();
+        totalOriginal = frame;
+        //pouze pri videu!
+        //cvtColor(totalOriginal, totalOriginal, COLOR_BGR2GRAY);
+
+        totalOriginal = Resize(totalOriginal, false);
+
+        totalOriginal = Denoise(totalOriginal, false);
+
+        Mat original = totalOriginal.clone();
+
+        original = AutoCannyDetection(original, 0.33, false);
+
+        //FUNGUJE KDYŽ PŘIJDE OPRAVDU 9X9 čar
+        ArrayList<Point> corners;
+        corners = DetectCorners(original, true , i);
+
+        //FUNGUJE KDYŽ PŘIJDOU 4 ROHY
+        //Rectification(totalOriginal, corners, true, i);
+        preRectification(totalOriginal, corners, true, i);
+    }
+
+    private static Mat preRectification(Mat m, ArrayList<Point> corners, boolean show, int fNum) {
+        Point [] srcArray = new Point[4];
+        srcArray[0] = new Point(corners.get(0).x, corners.get(0).y);
+        srcArray[1] = new Point(corners.get(1).x, corners.get(1).y);
+        srcArray[2] = new Point(corners.get(2).x, corners.get(2).y);
+        srcArray[3] = new Point(corners.get(3).x, corners.get(3).y);
+
+        double upperWidth = srcArray[1].x - srcArray[0].x;
+        double bottomWidth = srcArray[3].x - srcArray[2].x;
+        System.out.println("upper= "+upperWidth+" bottom= "+bottomWidth);
+
+        LinkedList<Point> dstArray = new LinkedList<>();
+
+        double avgLeft = (srcArray[0].x+srcArray[2].x)/2;
+        double avgRight = (srcArray[1].x+srcArray[3].x)/2;
+        double height = avgRight - avgLeft;
+
+
+        dstArray.add(new Point(avgLeft,srcArray[2].y-height));
+        dstArray.add(new Point(avgRight, srcArray[3].y-height));
+        dstArray.add(new Point(avgLeft, srcArray[2].y));
+        dstArray.add(new Point(avgRight, srcArray[3].y));
+
+
+        MatOfPoint2f dst = new MatOfPoint2f();
+        dst.fromList(dstArray);
+
+        MatOfPoint2f src = new MatOfPoint2f();
+        src.fromArray(srcArray);
+
+        Mat mRectified = new Mat();
+        Mat homography = findHomography(src, dst);
+        warpPerspective(m, mRectified, homography, new Size(m.cols(), m.rows()));
+        //TODO udělat obrázek menší (podle velikosti šachovnice)
+        if(show){
+            imshow("PREEEERectified_"+fNum, mRectified);
+            waitKey();
+        }
+        return mRectified;
+    }
+
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-//        VideoCapture cap = new VideoCapture("D:/School/2MIT/DP/video.mp4");
+//        VideoCapture cap = new VideoCapture("rtsp://192.168.0.100:8080/h264_pcm.sdp");
 //        Mat frame = new Mat();
 //        boolean ret;
+//        int i = 0;
 //        while(cap.isOpened()){
+//            //System.out.println("jedem");
 //            ret = cap.read(frame);
 //            if (ret){
-//                imshow("video",frame);
-//                 waitKey();
+//                i++;
+//                if (i%60==0){
+//                    processImage(frame);
+//                    //imshow("frame"+i,frame);
+//                    waitKey();
+//                    imwrite("videoFrames/video_"+i+".jpg", frame);
+//                }
+//
 //            } else {
+//                System.out.println("aa");
 //                break;
 //            }
 //        }
 //        cap.release();
 
 
-        Mat totalOriginal = imread("D:/School/2MIT/DP/test_5.jpg", Imgcodecs.IMREAD_GRAYSCALE );
+        for(int i = 1; i<22; i++){
+            Mat totalOriginal = imread("D:/School/2MIT/DP/test_"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+            processImage(totalOriginal, i);
+        }
 
-        totalOriginal = Resize(totalOriginal, false);
+//        totalOriginal = Resize(totalOriginal, true);
+//
+//        totalOriginal = Denoise(totalOriginal, false);
+//
+//        Mat original = totalOriginal.clone();
+//
+//        totalOriginal = preRectification(totalOriginal);
 
-        totalOriginal = Denoise(totalOriginal, true);
+//        original = AutoCannyDetection(original, 0.33, false);
+//
+//        //FUNGUJE KDYŽ PŘIJDE OPRAVDU 9X9 čar
+//        ArrayList<Point> corners;
+//        corners = DetectCorners(original, true);
+//
+//        //FUNGUJE KDYŽ PŘIJDOU 4 ROHY
+//        original = Rectification(totalOriginal, corners, true);
 
-        Mat original = totalOriginal.clone();
-
-        //threshold(original, original, 140, 255, THRESH_BINARY);
-        //imshow("BAW", original);
-        original = AutoCannyDetection(original, 0.33, true);
-
-        //FUNGUJE KDYŽ PŘIJDE OPRAVDU 9X9 čar
-        ArrayList<Point> corners;
-        corners = DetectCorners(original, true);
-
-        //FUNGUJE KDYŽ PŘIJDOU 4 ROHY
-        //Rectification(totalOriginal, corners, true);
+        //cutSquares2(original, corners);
 
 //        ArrayList<Rect> rectangleContours = Contours(totalOriginal, original, false);
 //        drawSquares(original, rectangleContours, true);
@@ -661,6 +816,6 @@ public class Main {
 //        sortSquaresByColor(histograms, squares);
 //        imshow("total original", totalOriginal);
 
-        waitKey();
+          waitKey();
     }
 }
