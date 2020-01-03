@@ -267,91 +267,6 @@ public class Main {
         ArrayList<Pair<Point, Point>> horizontalLines = new ArrayList<>();
         ArrayList<Pair<Point, Point>> verticalLines = new ArrayList<>();
 
-
-//        double rho_threshold= 15;
-//        double theta_threshold = Math.toRadians(3);
-//        Mat linesC = contourCluster(lines, rho_threshold, theta_threshold);
-
-//        ArrayList<ArrayList<Pair<Point, Point>>> linesC= new ArrayList<>(1);
-//        linesC.add (new ArrayList<>());
-//
-//        double r = lines.get(0,0)[0],
-//                t = lines.get(0, 0)[1];
-//        double aa = Math.cos(t), bb = Math.sin(t);
-//        double xx0 = aa * r, yy0 = bb * r;
-//        Point p1 = new Point(Math.round(xx0 + 1000 * (-bb)), Math.round(yy0 + 1000 * (aa)));
-//        Point p2 = new Point(Math.round(xx0 - 1500 * (-bb)), Math.round(yy0 - 1500 * (aa)));
-//        System.out.println("prvni cara ma bod1 = " + p1 + " a bod2 = " + p2);
-//        linesC.get(0).add(new Pair<>(p1, p2));
-//
-//        int clusters = 1;
-//
-//        double deltaX = 100;
-//        double deltaY = 100;
-//
-//        for (int i = 1; i < lines.rows(); i++) {
-//            double rho = lines.get(i, 0)[0],
-//                    theta = lines.get(i, 0)[1];
-//            double a = Math.cos(theta), b = Math.sin(theta);
-//            double x0 = a * rho, y0 = b * rho;
-//            Point pt11 = new Point(Math.round(x0 + 1000 * (-b)), Math.round(y0 + 1000 * (a)));
-//            Point pt12 = new Point(Math.round(x0 - 1500 * (-b)), Math.round(y0 - 1500 * (a)));
-//
-//            System.out.println("NOVA CARA - bod1 = " + pt11 + " bod2 = " + pt12);
-//            Point pt21 = null;
-//            Point pt22 = null;
-//            for (int j = 0; j < linesC.size(); j++) {
-//                pt21 = linesC.get(j).get(0).getKey();
-//                pt22 = linesC.get(j).get(0).getValue();
-//                if (Math.abs(pt11.x-pt12.x) < 200) {
-//                    if ((Math.abs(pt11.x - pt21.x) < deltaX) & (Math.abs(pt12.x - pt22.x) < deltaX)) {
-//                        linesC.get(j).add(new Pair<>(pt11, pt12));
-//                        System.out.println("A-Pridano do clusteru " + j + ": bod1 = " + pt11 + " bod2 = " + pt12);
-//                        break;
-//                    }
-//                } else {
-//                    if ((Math.abs(pt11.y - pt21.y) < deltaY) & (Math.abs(pt12.y - pt22.y) < deltaY)) {
-//                        linesC.get(j).add(new Pair<>(pt11, pt12));
-//                        System.out.println("B-Pridano do clusteru" + j + ": bod1 = " + pt11 + " bod2 = " + pt12);
-//                        break;
-//                    }
-//                }
-//            }
-//            linesC.add(new ArrayList<>());
-//            linesC.get(clusters).add(new Pair<>(pt11, pt12));
-//            clusters += 1;
-//        }
-//
-//        Random rng = new Random(12345);
-//        for (ArrayList<Pair<Point, Point>> cluster: linesC) {
-//            System.out.println(cluster);
-//        }
-//
-//        for(int y = 0; y < linesC.size(); y++){
-//            ArrayList<Pair<Point, Point>> cluster = linesC.get(y);
-//            double sumX1 = 0, sumY1 = 0, sumX2 = 0, sumY2 = 0;
-//            for(Pair<Point, Point> line: cluster){
-//                sumX1 += line.getKey().x;
-//                sumY1 += line.getKey().y;
-//                sumX2 += line.getValue().x;
-//                sumY2 += line.getValue().y;
-//
-//            }
-//            double avgX1 = sumX1 / cluster.size();
-//            double avgY1 = sumY1 / cluster.size();
-//            double avgX2 = sumX2 / cluster.size();
-//            double avgY2 = sumY2 / cluster.size();
-//
-//            Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-//
-//            Imgproc.line(mHough, new Point(avgX1, avgY1), new Point(avgX2, avgY2), color, 1, Imgproc.LINE_AA, 0);
-//
-//        }
-
-
-
-
-
         for (int x = 0; x < lines.rows(); x++) {
             double rho = lines.get(x, 0)[0],
                     theta = lines.get(x, 0)[1];
@@ -422,34 +337,107 @@ public class Main {
             return p1.x > p2.x ? 1 : -1;
         });
 
-
-
-        //vybira se tech 8 spravnych
-        /*double prevDist = 0;
-        for(int i = 0; i < horizontalLines.size()-1; i++){
-            if (i == 8){
-                break;
+        /*VYBER 9 SPRAVNYCH CAR*/
+        ArrayList<Double> distArray = new ArrayList<>();
+        for (int i=1; i<verticalLines.size()-2; i++){ //vetsi sance na spravny prumer kdyz vynecham kraje
+            Pair<Point, Point> line1 = verticalLines.get(i);
+            Pair<Point, Point> line2 = verticalLines.get(i+1);
+            Point p1 = line1.getKey();
+            if (p1.y < 0){
+                p1 = line1.getValue();
             }
-            Pair<Point, Point> line1 = horizontalLines.get(i);
-            Pair<Point, Point> line2 = horizontalLines.get(i+1);
-            double dist = Math.abs(line1.getKey().y - line2.getKey().y);
-            //System.out.println("i = " + i + "   " + dist);
-
-            if (prevDist == 0 & dist > 70.0){
-                horizontalLines.remove(horizontalLines.get(i));
-                i--;
-            } else if (dist > prevDist){
-                prevDist = dist;
-            } else {
-                horizontalLines.remove(horizontalLines.get(i+1));
-                i--;
+            Point p2 = line2.getKey();
+            if (p2.y < 0){
+                p2 = line2.getValue();
             }
-        }*/
+            double dist = p2.x - p1.x;
+            System.out.println(dist);
+            distArray.add(dist);
+        }
+        distArray = new ArrayList<Double>(distArray.subList(distArray.size()/2-2, distArray.size()/2+2));
+        double avgDist = average(distArray);
+        System.out.println(avgDist);
 
-        Imgproc.line(mHough, horizontalLines.get(0).getKey(), horizontalLines.get(0).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
-        Imgproc.line(mHough, horizontalLines.get(horizontalLines.size()-1).getKey(), horizontalLines.get(horizontalLines.size()-1).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
-        Imgproc.line(mHough, verticalLines.get(0).getKey(), verticalLines.get(0).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
-        Imgproc.line(mHough, verticalLines.get(verticalLines.size()-1).getKey(), verticalLines.get(verticalLines.size()-1).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
+        double minDist = 10000;
+        int index = 0;
+        int minIndex = 0;
+        System.out.println("-------POINTS-------");
+        System.out.println("WIDTH = " + m.width());
+        for(Pair<Point, Point> line: verticalLines){
+
+            Point p = line.getKey().y > line.getValue().y ? line.getKey() : line.getValue();
+            if (Math.abs(p.x-m.width()/2.0) < minDist){
+                minDist = Math.abs(p.x-m.width()/2.0);
+                minIndex = index;
+            }
+            System.out.println(p.x);
+            index++;
+        }
+        System.out.println("nejbliz je index " + minIndex + " a dist je " + minDist);
+
+//        for(int i=0; i<verticalLines.size()-1; i++){
+//            Pair<Point, Point> line1 = verticalLines.get(i);
+//            Pair<Point, Point> line2 = verticalLines.get(i+1);
+//            Point p1 = line1.getKey();
+//            if (p1.y < 0){
+//                p1 = line1.getValue();
+//            }
+//            Point p2 = line2.getKey();
+//            if (p2.y < 0){
+//                p2 = line2.getValue();
+//            }
+//            double dist = p2.x - p1.x;
+//            if (Math.abs(dist-avgDist) < 30){
+//                Imgproc.line(mHough, line1.getKey(), line1.getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
+//                Imgproc.line(mHough, line2.getKey(), line2.getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
+//            } else {
+//                if (i>verticalLines.size()/2){
+//                    Imgproc.line(mHough, line2.getKey(), line2.getValue(), new Scalar(255, 255, 255), 2, Imgproc.LINE_AA, 0);
+//                } else {
+//                    Imgproc.line(mHough, line1.getKey(), line1.getValue(), new Scalar(255, 255, 255), 2, Imgproc.LINE_AA, 0);
+//                }
+//            }
+//        }
+
+
+
+        /*VYBER 9 SPRAVNYCH CAR - HORIZONTALNE*/
+        double minDistH = 10000;
+        int indexH = 0;
+        int minIndexH = 0;
+        System.out.println("-------POINTS-------");
+        System.out.println("HEIGHT = " + m.height());
+        for(Pair<Point, Point> line: verticalLines){
+
+            Point p = line.getKey();
+            if (Math.abs(p.x-m.height()/2.0) < minDistH){
+                minDistH = Math.abs(p.x-m.height()/2.0);
+                minIndexH = indexH;
+            }
+            System.out.println(p.x);
+            indexH++;
+        }
+        System.out.println("nejbliz je indexH " + minIndexH + " a distH je " + minDistH);
+
+        Pair<Point, Point> lineH = horizontalLines.get(minIndexH);
+        Pair<Point, Point> lineV = verticalLines.get(minIndex);
+        Point center = intersection(
+                lineH.getKey().x,
+                lineH.getKey().y,
+                lineH.getValue().x,
+                lineH.getValue().y,
+                lineV.getKey().x,
+                lineV.getKey().y,
+                lineV.getValue().x,
+                lineV.getValue().y
+        );
+
+        Imgproc.circle(mHough, center, 20, new Scalar(232, 204, 215), -1);
+
+        //Imgproc.line(mHough, horizontalLines.get(0).getKey(), horizontalLines.get(0).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
+        //Imgproc.line(mHough, horizontalLines.get(horizontalLines.size()-1).getKey(), horizontalLines.get(horizontalLines.size()-1).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
+        //Imgproc.line(mHough, verticalLines.get(0).getKey(), verticalLines.get(0).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
+        //Imgproc.line(mHough, verticalLines.get(verticalLines.size()-1).getKey(), verticalLines.get(verticalLines.size()-1).getValue(), new Scalar(0, 255, 0), 2, Imgproc.LINE_AA, 0);
 
         corners.add(intersection(
                     horizontalLines.get(0).getKey().x,
@@ -547,71 +535,11 @@ public class Main {
         if(show){
             imshow("Rectified_"+fNum, mRectified);
             waitKey();
+            imwrite("D:/School/2MIT/DP/teeeeeeeeeeeeeeeeeeest.jpg", mRectified);
         }
         return mRectified;
     }
 /*-----------------------rektifikace end-----------------------*/
-
-    private static void histogramToFile(Mat hist, int k, Mat squareCut){
-        int histSize = 256;
-        int histW = 512, histH = 400;
-        int binW = (int) Math.round((double) histW / histSize);
-        Mat histImage = new Mat( histH, histW, CvType.CV_8UC3, new Scalar( 0,0,0) );
-        Core.normalize(hist, hist, 0, histImage.rows(), Core.NORM_MINMAX);
-
-        //TODO porovnat histogram s ukázkovými
-        Mat blackHist = new Mat();
-        Mat whiteHist = new Mat();
-
-        float[] range = {0, 256}; //the upper boundary is exclusive
-        MatOfFloat histRange = new MatOfFloat(range);
-        Mat blackSquare = imread("D:/School/2MIT/DP/black_square.jpg");
-        Mat whiteSquare = imread("D:/School/2MIT/DP/white_square.jpg");
-        List<Mat> blackList= new ArrayList<>();
-        blackList.add(blackSquare);
-        List<Mat> whiteList= new ArrayList<>();
-        whiteList.add(blackSquare);
-        calcHist(blackList, new MatOfInt(0), new Mat(), blackHist, new MatOfInt(histSize), histRange, false);
-        calcHist(whiteList, new MatOfInt(0), new Mat(), whiteHist, new MatOfInt(histSize), histRange, false);
-
-        double isBlack = compareHist(blackHist, hist, CV_COMP_INTERSECT);
-        double isWhite = compareHist(whiteHist, hist, CV_COMP_INTERSECT);
-
-        System.out.println("cislo " + k + " ma vysledek " + isBlack);
-        float[] histData = new float[(int) (hist.total() * hist.channels())];
-        hist.get(0, 0, histData);
-
-
-        for( int i = 1; i < histSize; i++ ) {
-            Imgproc.line(histImage, new Point(binW * (i - 1), histH - Math.round(histData[i - 1])),
-                    new Point(binW * (i), histH - Math.round(histData[i])), new Scalar(255, 255, 255), 2);
-        }
-
-        imwrite("D:/School/2MIT/DP/results/test_3/hist/"+k+"_hist_.jpg", histImage);
-        imwrite("D:/School/2MIT/DP/results/test_3/hist/"+k+".jpg", squareCut);
-    }
-
-    /**
-     * vypocita histogramy pro vsechny ctverce
-     * @param squares seznam ctvercu z funkce cutSquares()
-     * @return arraylist histogramu techto ctvercu
-     */
-    private static ArrayList<Mat> createHistogramList(ArrayList<Mat> squares){
-        ArrayList<Mat> result = new ArrayList<>();
-
-        for (Mat square : squares){
-            List<Mat> list = new ArrayList<>();
-            list.add(square);
-            Mat hist = new Mat();
-            int histSize = 256;
-            float[] range = {0, 256}; //the upper boundary is exclusive
-            MatOfFloat histRange = new MatOfFloat(range);
-            calcHist(list, new MatOfInt(0), new Mat(), hist, new MatOfInt(histSize), histRange, false);
-            result.add(hist);
-        }
-
-        return result;
-    }
 
     /**
      *
@@ -691,6 +619,48 @@ public class Main {
 
     }
 
+    private static Mat preRectification(Mat m, ArrayList<Point> corners, boolean show, int fNum) {
+        Point [] srcArray = new Point[4];
+        srcArray[0] = new Point(corners.get(0).x, corners.get(0).y);
+        srcArray[1] = new Point(corners.get(1).x, corners.get(1).y);
+        srcArray[2] = new Point(corners.get(2).x, corners.get(2).y);
+        srcArray[3] = new Point(corners.get(3).x, corners.get(3).y);
+
+        double upperWidth = srcArray[1].x - srcArray[0].x;
+        double bottomWidth = srcArray[3].x - srcArray[2].x;
+        System.out.println("upper= "+upperWidth+" bottom= "+bottomWidth);
+
+        LinkedList<Point> dstArray = new LinkedList<>();
+
+        double avgLeft = (srcArray[0].x+srcArray[2].x)/2;
+        double avgRight = (srcArray[1].x+srcArray[3].x)/2;
+        double height = avgRight - avgLeft;
+
+
+        dstArray.add(new Point(avgLeft,srcArray[2].y-800));
+        dstArray.add(new Point(avgLeft+800, srcArray[3].y-800));
+        dstArray.add(new Point(avgLeft, srcArray[2].y));
+        dstArray.add(new Point(avgLeft+800, srcArray[3].y));
+
+
+        MatOfPoint2f dst = new MatOfPoint2f();
+        dst.fromList(dstArray);
+
+        MatOfPoint2f src = new MatOfPoint2f();
+        src.fromArray(srcArray);
+
+        Mat mRectified = new Mat();
+        Mat homography = findHomography(src, dst);
+
+        warpPerspective(m, mRectified, homography, new Size(avgRight+50, srcArray[2].y+50));
+        //TODO udělat obrázek menší (podle velikosti šachovnice)
+        if(show){
+            imshow("PREEEERectified_"+fNum, mRectified);
+            waitKey();
+        }
+        return mRectified;
+    }
+
     public static void processImage(Mat frame, int i){
         Mat totalOriginal = new Mat();
         totalOriginal = frame;
@@ -710,83 +680,52 @@ public class Main {
         corners = DetectCorners(original, true , i);
 
         //FUNGUJE KDYŽ PŘIJDOU 4 ROHY
-        //Rectification(totalOriginal, corners, true, i);
-        preRectification(totalOriginal, corners, true, i);
-    }
-
-    private static Mat preRectification(Mat m, ArrayList<Point> corners, boolean show, int fNum) {
-        Point [] srcArray = new Point[4];
-        srcArray[0] = new Point(corners.get(0).x, corners.get(0).y);
-        srcArray[1] = new Point(corners.get(1).x, corners.get(1).y);
-        srcArray[2] = new Point(corners.get(2).x, corners.get(2).y);
-        srcArray[3] = new Point(corners.get(3).x, corners.get(3).y);
-
-        double upperWidth = srcArray[1].x - srcArray[0].x;
-        double bottomWidth = srcArray[3].x - srcArray[2].x;
-        System.out.println("upper= "+upperWidth+" bottom= "+bottomWidth);
-
-        LinkedList<Point> dstArray = new LinkedList<>();
-
-        double avgLeft = (srcArray[0].x+srcArray[2].x)/2;
-        double avgRight = (srcArray[1].x+srcArray[3].x)/2;
-        double height = avgRight - avgLeft;
-
-
-        dstArray.add(new Point(avgLeft,srcArray[2].y-height));
-        dstArray.add(new Point(avgRight, srcArray[3].y-height));
-        dstArray.add(new Point(avgLeft, srcArray[2].y));
-        dstArray.add(new Point(avgRight, srcArray[3].y));
-
-
-        MatOfPoint2f dst = new MatOfPoint2f();
-        dst.fromList(dstArray);
-
-        MatOfPoint2f src = new MatOfPoint2f();
-        src.fromArray(srcArray);
-
-        Mat mRectified = new Mat();
-        Mat homography = findHomography(src, dst);
-        warpPerspective(m, mRectified, homography, new Size(m.cols(), m.rows()));
-        //TODO udělat obrázek menší (podle velikosti šachovnice)
-        if(show){
-            imshow("PREEEERectified_"+fNum, mRectified);
-            waitKey();
-        }
-        return mRectified;
+        Rectification(totalOriginal, corners, true, i);
+        //original = preRectification(totalOriginal, corners, true, i);
     }
 
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-//        VideoCapture cap = new VideoCapture("rtsp://192.168.0.100:8080/h264_pcm.sdp");
-//        Mat frame = new Mat();
-//        boolean ret;
-//        int i = 0;
-//        while(cap.isOpened()){
-//            //System.out.println("jedem");
-//            ret = cap.read(frame);
-//            if (ret){
-//                i++;
-//                if (i%60==0){
-//                    processImage(frame);
-//                    //imshow("frame"+i,frame);
-//                    waitKey();
-//                    imwrite("videoFrames/video_"+i+".jpg", frame);
-//                }
-//
-//            } else {
-//                System.out.println("aa");
-//                break;
-//            }
-//        }
-//        cap.release();
+        BoardRecognizer recognizer = new BoardRecognizer();
+        //Mat totalOriginal = imread("D:/School/2MIT/DP/template.jpg", Imgcodecs.IMREAD_GRAYSCALE);
+        //recognizer.processImage(totalOriginal);
 
+        //VideoCapture cap = new VideoCapture("rtsp://192.168.0.100:8080/h264_pcm.sdp");
+        VideoCapture cap = new VideoCapture("D:/School/2MIT/DP/video3.mp4");
+        Mat frame = new Mat();
+        boolean ret;
+        int i = 0;
+        while(cap.isOpened()){
+            //System.out.println("jedem");
+            ret = cap.read(frame);
+            if (ret){
+                i++;
+                if (i%60==0){
+                    //imshow("frame_"+i, frame);
+                    //waitKey();
+                    recognizer.processFrame(frame, i);
+                    //imshow("frame"+i,frame);
+                    //waitKey();
+                    //imwrite("videoFrames/video_"+i+".jpg", frame);
+                }
 
+            } else {
+                System.out.println("aa");
+                break;
+            }
+        }
+        cap.release();
+
+/*
         for(int i = 1; i<22; i++){
             Mat totalOriginal = imread("D:/School/2MIT/DP/test_"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
             processImage(totalOriginal, i);
         }
+*/
 
+        //Mat totalOriginal = imread("D:/School/2MIT/DP/test_99.jpg", Imgcodecs.IMREAD_GRAYSCALE);
+        //processImage(totalOriginal, 1);
 //        totalOriginal = Resize(totalOriginal, true);
 //
 //        totalOriginal = Denoise(totalOriginal, false);
@@ -816,6 +755,6 @@ public class Main {
 //        sortSquaresByColor(histograms, squares);
 //        imshow("total original", totalOriginal);
 
-          waitKey();
+         // waitKey();
     }
 }
