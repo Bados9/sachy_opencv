@@ -2,10 +2,11 @@ import javafx.util.Pair;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.io.File;
+import java.lang.reflect.Array;
+import java.util.*;
 
+import static org.opencv.calib3d.Calib3d.convertPointsToHomogeneous;
 import static org.opencv.calib3d.Calib3d.findHomography;
 import static org.opencv.highgui.HighGui.imshow;
 import static org.opencv.highgui.HighGui.waitKey;
@@ -33,11 +34,66 @@ public class BoardRecognizer {
     public BoardRecognizer(){
 
     }
-
-    public void show(String text, Mat image){
+    //cerne-leva klavesnice
+    //bile-prava klavesnice
+    //0 - prázdné pole (empty)
+    //1 - pěšák (pawn)
+    //2 - král (king)
+    //3 - královna (queen)
+    //4 - střelec (bishop)
+    //5 - kůň (knight)
+    //6 - věž (rook)
+    public void show(String text, Mat image, boolean save){
         imshow(iNum+"_"+text, image);
         iNum++;
-        waitKey();
+        if (save){
+            int key = waitKey(0);
+            System.out.println("zmacknuto bylo "+key);
+            switch(key){
+                case 98:
+                    System.out.println("na fotce je bily kral");
+                    break;
+                case 50:
+                    System.out.println("na foce je cerny kral");
+                    break;
+                case 99:
+                    System.out.println("na fotce je bila kralovna");
+                    break;
+                case 51:
+                    System.out.println("na foce je cerna kralovna");
+                    break;
+                case 97:
+                    System.out.println("na fotce je bily pesak");
+                    break;
+                case 49:
+                    System.out.println("na foce je cerny pesak");
+                    break;
+                case 101:
+                    System.out.println("na fotce je bily kun");
+                    break;
+                case 53:
+                    System.out.println("na foce je cerny kun");
+                    break;
+                case 100:
+                    System.out.println("na fotce je bily strelec");
+                    break;
+                case 52:
+                    System.out.println("na foce je cerny strelec");
+                    break;
+                case 102:
+                    System.out.println("na fotce je bila vez");
+                    break;
+                case 54:
+                    System.out.println("na foce je cerna vez");
+                    break;
+                case 32: //mezernik
+                    System.out.println("policko je prazdne");
+                    break;
+            }
+        } else {
+            waitKey();
+        }
+
     }
 
     public Mat resize(Mat m){
@@ -176,11 +232,11 @@ public class BoardRecognizer {
         return ret;
     }
 
-    public void selectLines(BoardLines object){
+    public BoardLines selectLines(BoardLines object){
         ArrayList<Pair<Point, Point>> verticalLines = object.verticalLines;
         ArrayList<Pair<Point, Point>> horizontalLines = object.horizontalLines;
         Mat m = object.frame;
-
+        Mat rectifiedWLines = rectified.clone();
         /*detekce 9x9 car*/
         double avgSquareSize = 0;
         double count = 0;
@@ -267,7 +323,7 @@ public class BoardRecognizer {
         }
 
         for (Pair<Point, Point> line: finalVerticalLines){
-            Imgproc.line(object.frame, line.getKey(), line.getValue(), new Scalar(0,255,0), 4);
+            Imgproc.line(rectifiedWLines, line.getKey(), line.getValue(), new Scalar(0,255,0), 4);
         }
 
         //-----------horizontalni cast
@@ -357,11 +413,124 @@ public class BoardRecognizer {
         }
 
         for (Pair<Point, Point> line: finalHorizontalLines){
-            Imgproc.line(object.frame, line.getKey(), line.getValue(), new Scalar(0,255,0), 4);
+            Imgproc.line(rectifiedWLines, line.getKey(), line.getValue(), new Scalar(0,255,0), 4);
         }
 
 
-        show("test", object.frame);
+        //show("test", rectifiedWLines);
+        BoardLines ret = new BoardLines(finalVerticalLines, finalHorizontalLines, rectifiedWLines);
+
+        return ret;
+    }
+
+    public ArrayList<Rect> findSquares(Mat totalOriginal, BoardLines selectedLines, boolean show){
+        Mat original = totalOriginal.clone();
+        List<MatOfPoint> contours = new ArrayList<>();
+        ArrayList<Rect> rectangles = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(selectedLines.frame, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        double areaSum = 0.0;
+        int q = 0;
+        for (int i = 0; i < contours.size(); i++) {
+            Rect r = boundingRect(contours.get(i));
+            if (Math.abs(r.width/(double)r.height - 1.0) < 0.8){ //trideni podle pomeru vysky a sirky - pouze ctverce
+                rectangles.add(r);
+                areaSum += r.area();
+            }
+        }
+
+        //spocita se prumerna plocha a potom se vyrazne odchylky odstrani
+        //ve stejnem cyklu se kontroluje pozice ctverce, pokud neni na sachovnici, ale na kraji, je odstranen
+        double minLeft, maxRight, minTop, maxBottom;
+        minLeft = (selectedLines.verticalLines.get(0).getKey().x + selectedLines.verticalLines.get(0).getValue().x)/2.0;
+        maxRight = (selectedLines.verticalLines.get(8).getKey().x + selectedLines.verticalLines.get(8).getValue().x)/2.0;
+        minTop = (selectedLines.horizontalLines.get(0).getKey().y + selectedLines.horizontalLines.get(0).getValue().y)/2.0;
+        maxBottom = (selectedLines.horizontalLines.get(8).getKey().y + selectedLines.horizontalLines.get(8).getValue().y)/2.0;
+        //System.out.println("TOP" +minTop+ " BOTTOM "+maxBottom+" LEFT "+minLeft+" RIGHT "+maxRight);
+        double averageArea = areaSum/rectangles.size();
+        List<Rect> toRemove = new ArrayList<>();
+        for (Rect r: rectangles){
+            if((r.area()-averageArea) > 2000){
+                toRemove.add(r);
+            }
+            if (r.x < minLeft-20 || r.x+r.width > maxRight+20){
+                toRemove.add(r);
+            }
+            if (r.y < minTop-20 || r.y+r.height > maxBottom+20){
+                toRemove.add(r);
+            }
+        }
+        rectangles.removeAll(toRemove);
+
+
+        System.out.println("POCET CTVERCU JE " + rectangles.size());
+        Random rng = new Random(12345);
+        for(Rect rect : rectangles){
+            Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+            rectangle(original, new Point(rect.x, rect.y), new Point(rect.x+rect.width, rect.y+rect.height), color, -1);
+        }
+
+
+        if(show){
+            show("Contours", original, false);
+        }
+        return rectangles;
+    }
+
+    /*predpoklada 64 ctvercu - srovna je zleva zespodu po radach*/
+    private static ArrayList<List<Rect>> createChessboard(ArrayList<Rect> rectangles) {
+        if (rectangles.size() < 64){
+            return null;
+        }
+        //seradi ctverce odspodu nahoru
+        rectangles.sort((r1, r2) -> {
+            if (r1.y == r2.y) return 0;
+            return r1.y > r2.y ? -1 : 1;
+        });
+        ArrayList<List<Rect>> rows = new ArrayList<>();
+        for (int i = 0; i < 8; i++){
+            List<Rect> row = rectangles.subList(i*8, i*8+8);
+            //seradi ctverce v rade zleva doprava
+            row.sort((r1, r2) -> {
+                if (r1.x == r2.x) return 0;
+                return r1.x < r2.x ? -1 : 1;
+            });
+            rows.add(row);
+        }
+        return rows;
+    }
+
+    private ArrayList<Mat> cutSquares(Mat totalOriginal, ArrayList<Rect> rectangleContours) {
+        //TODO az pro rozpoznavani, pro tvorbu datasetu neni potřeba
+        //ArrayList<List<Rect>> rows = createChessboard(rectangleContours);
+        ArrayList<Mat> result = new ArrayList<>();
+        int i = 0;
+        for(Rect square: rectangleContours){
+            i++;
+            int heightOld = square.height;
+            square.height = (int) (heightOld *2.5);
+            int diff = square.height - heightOld;
+            square.y = square.y - diff + 5;
+            square.x -= 10;
+            square.width += 20;
+            //square.height = (int) (square.height*1.5);
+
+            Mat squareCut = totalOriginal.submat(square);
+            result.add(squareCut);
+            show("square_"+i, squareCut, true);
+            int index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/test").list()).length;
+            imwrite("D:/School/2MIT/DP/data/test/square_"+index+".jpg",squareCut);
+        }
+        /*for (List<Rect> row : rows) {
+            for(Rect square : row){
+                i++;
+                Mat squareCut = totalOriginal.submat(square);
+                result.add(squareCut);
+                show("square_"+i, squareCut);
+            }
+        }*/
+        return result;
     }
 
     public void processImage(Mat image){
@@ -373,10 +542,16 @@ public class BoardRecognizer {
 
         image = autoCannyDetection(image);
 
-        BoardLines lines = detectLines(image);
+        BoardLines allLines = detectLines(image);
 
-        selectLines(lines);
-        //show("bla", image);
+        BoardLines selectedLines = selectLines(allLines);
+
+        show("BoardDetected",selectedLines.frame, false);
+
+        ArrayList<Rect> squares = findSquares(rectified, selectedLines,true);
+
+        cutSquares(rectified, squares);
+
     }
 
     public void processFrame(Mat frame, int seq){

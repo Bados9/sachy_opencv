@@ -692,7 +692,7 @@ public class Main {
         //recognizer.processImage(totalOriginal);
 
         //VideoCapture cap = new VideoCapture("rtsp://192.168.0.100:8080/h264_pcm.sdp");
-        VideoCapture cap = new VideoCapture("D:/School/2MIT/DP/video3.mp4");
+        VideoCapture cap = new VideoCapture("D:/School/2MIT/DP/video4.mp4");
         Mat frame = new Mat();
         boolean ret;
         int i = 0;
