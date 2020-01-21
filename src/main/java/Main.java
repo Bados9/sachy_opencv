@@ -692,37 +692,39 @@ public class Main {
         //recognizer.processImage(totalOriginal);
 
         //VideoCapture cap = new VideoCapture("rtsp://192.168.0.100:8080/h264_pcm.sdp");
-        VideoCapture cap = new VideoCapture("D:/School/2MIT/DP/video4.mp4");
-        Mat frame = new Mat();
-        boolean ret;
-        int i = 0;
-        while(cap.isOpened()){
-            //System.out.println("jedem");
-            ret = cap.read(frame);
-            if (ret){
-                i++;
-                if (i%60==0){
-                    //imshow("frame_"+i, frame);
-                    //waitKey();
-                    recognizer.processFrame(frame, i);
-                    //imshow("frame"+i,frame);
-                    //waitKey();
-                    //imwrite("videoFrames/video_"+i+".jpg", frame);
-                }
+//        VideoCapture cap = new VideoCapture("D:/School/2MIT/DP/video4.mp4");
+//        Mat frame = new Mat();
+//        boolean ret;
+//        int i = 0;
+//        while(cap.isOpened()){
+//            //System.out.println("jedem");
+//            ret = cap.read(frame);
+//            if (ret){
+//                i++;
+//                if (i%60==0){
+//                    //imshow("frame_"+i, frame);
+//                    //waitKey();
+//                    recognizer.processFrame(frame, i);
+//                    //imshow("frame"+i,frame);
+//                    //waitKey();
+//                    //imwrite("videoFrames/video_"+i+".jpg", frame);
+//                }
+//
+//            } else {
+//                System.out.println("aa");
+//                break;
+//            }
+//        }
+//        cap.release();
 
-            } else {
-                System.out.println("aa");
-                break;
-            }
-        }
-        cap.release();
 
-/*
-        for(int i = 1; i<22; i++){
-            Mat totalOriginal = imread("D:/School/2MIT/DP/test_"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
-            processImage(totalOriginal, i);
+        for(int i = 72; i<73; i++){
+            Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+            Mat toSave = totalOriginal.clone();
+            recognizer.processImage(totalOriginal );
+            imwrite("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", toSave);
         }
-*/
+
 
         //Mat totalOriginal = imread("D:/School/2MIT/DP/test_99.jpg", Imgcodecs.IMREAD_GRAYSCALE);
         //processImage(totalOriginal, 1);

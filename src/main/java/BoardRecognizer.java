@@ -48,46 +48,79 @@ public class BoardRecognizer {
         iNum++;
         if (save){
             int key = waitKey(0);
-            System.out.println("zmacknuto bylo "+key);
+            //System.out.println("zmacknuto bylo "+key);
+            int index;
             switch(key){
                 case 98:
-                    System.out.println("na fotce je bily kral");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_king").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_king/white_king." + index + ".jpg", image);
+                    //System.out.println("na fotce je bily kral");
                     break;
                 case 50:
-                    System.out.println("na foce je cerny kral");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_king").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_king/black_king." + index + ".jpg", image);
+                    //System.out.println("na foce je cerny kral");
                     break;
-                case 99:
-                    System.out.println("na fotce je bila kralovna");
+                case 99: //prvnich 30 obrazku bez kralovny --doplnit
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_queen").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_queen/white_queen." + index + ".jpg", image);
                     break;
                 case 51:
-                    System.out.println("na foce je cerna kralovna");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_queen").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_queen/black_queen." + index + ".jpg", image);
+                    //System.out.println("na foce je cerna kralovna");
                     break;
                 case 97:
-                    System.out.println("na fotce je bily pesak");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_pawn").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_pawn/white_pawn." + index + ".jpg", image);
+                    //System.out.println("na fotce je bily pesak");
                     break;
                 case 49:
-                    System.out.println("na foce je cerny pesak");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_pawn").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_pawn/black_pawn." + index + ".jpg", image);
+                    //System.out.println("na foce je cerny pesak");
                     break;
                 case 101:
-                    System.out.println("na fotce je bily kun");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_knight").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_knight/white_knight." + index + ".jpg", image);
+                    //System.out.println("na fotce je bily kun");
                     break;
                 case 53:
-                    System.out.println("na foce je cerny kun");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_knight").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_knight/black_knight." + index + ".jpg", image);
+                    //System.out.println("na foce je cerny kun");
                     break;
                 case 100:
-                    System.out.println("na fotce je bily strelec");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_bishop").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_bishop/white_bishop." + index + ".jpg", image);
+                    //System.out.println("na fotce je bily strelec");
                     break;
                 case 52:
-                    System.out.println("na foce je cerny strelec");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_bishop").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_bishop/black_bishop." + index + ".jpg", image);
+                    //System.out.println("na foce je cerny strelec");
                     break;
                 case 102:
-                    System.out.println("na fotce je bila vez");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_rook").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_rook/white_rook." + index + ".jpg", image);
+                    //System.out.println("na fotce je bila vez");
                     break;
                 case 54:
-                    System.out.println("na foce je cerna vez");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_rook").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_rook/black_rook." + index + ".jpg", image);
+                    //System.out.println("na foce je cerna vez");
+                    break;
+                case 10: //enter
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_empty").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/white_empty/white_empty." + index + ".jpg", image);
+                    //System.out.println("policko je prazdne");
                     break;
                 case 32: //mezernik
-                    System.out.println("policko je prazdne");
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_empty").list()).length;
+                    imwrite("D:/School/2MIT/DP/data/black_empty/black_empty." + index + ".jpg", image);
+                    //System.out.println("policko je prazdne");
+                    break;
+                default : //neukladat
                     break;
             }
         } else {
@@ -126,10 +159,10 @@ public class BoardRecognizer {
         srcArray[2] = new Point(330,150);
         srcArray[3] = new Point(m.width()-330,150);
 
-        Imgproc.circle(m, new Point(180,880), 20, new Scalar(255,0,0), -1);
-        Imgproc.circle(m, new Point(m.width()-180,880), 20, new Scalar(255,0,0), -1);
-        Imgproc.circle(m, new Point(330,150), 20, new Scalar(255,0,0), -1);
-        Imgproc.circle(m, new Point(m.width()-330,150), 20, new Scalar(255,0,0), -1);
+        //Imgproc.circle(m, new Point(180,880), 20, new Scalar(255,0,0), -1);
+        //Imgproc.circle(m, new Point(m.width()-180,880), 20, new Scalar(255,0,0), -1);
+        //Imgproc.circle(m, new Point(330,150), 20, new Scalar(255,0,0), -1);
+        //Imgproc.circle(m, new Point(m.width()-330,150), 20, new Scalar(255,0,0), -1);
 
         //show("m",m);
 
@@ -176,8 +209,7 @@ public class BoardRecognizer {
             double x0 = a * rho, y0 = b * rho;
             Point pt1 = new Point(Math.round(x0 + 1000 * (-b)), Math.round(y0 + 1000 * (a)));
             Point pt2 = new Point(Math.round(x0 - 1500 * (-b)), Math.round(y0 - 1500 * (a)));
-            //Imgproc.line(mHough, pt1, pt2, new Scalar(0,0,255), 1, Imgproc.LINE_AA, 0);
-
+            Imgproc.line(mHough, pt1, pt2, new Scalar(0,0,255), 1, Imgproc.LINE_AA, 0);
 
             //TODO udelat lepsi rozpoznavani jedinecnych car - clustering, prumerovani
             if (Math.abs(pt1.y - pt2.y) < 300){ //horizontalni
@@ -248,7 +280,7 @@ public class BoardRecognizer {
             double dist = Math.abs(p1.x-p2.x);
             if (dist > 40){
                 avgSquareSize += dist;
-                System.out.println(Math.abs(p1.x-p2.x));
+                //System.out.println(Math.abs(p1.x-p2.x));
                 count++;
             }
         }
@@ -338,12 +370,12 @@ public class BoardRecognizer {
             double dist = Math.abs(p1.y-p2.y);
             if (dist > 40){
                 avgSquareSizeH += dist;
-                System.out.println(Math.abs(p1.y-p2.y));
+                //System.out.println(Math.abs(p1.y-p2.y));
                 countH++;
             }
         }
         avgSquareSizeH /= countH;
-        System.out.println("average= "+avgSquareSizeH);
+        //System.out.println("average= "+avgSquareSizeH);
 
         //hledani nejblizsi cary ke stredu
         double minDistH = 10000;
@@ -359,7 +391,7 @@ public class BoardRecognizer {
             //System.out.println(p.y);
             indexH++;
         }
-        System.out.println("nejbliz je index "+minIndexH+" a dist je "+minDistH);
+        //System.out.println("nejbliz je index "+minIndexH+" a dist je "+minDistH);
 
         Pair<Point, Point> centerLineHorizontal = horizontalLines.get(minIndexH);
         ArrayList<Pair<Point, Point>> finalHorizontalLines = new ArrayList<>();
@@ -378,13 +410,13 @@ public class BoardRecognizer {
                 //System.out.println("porovnavam " +Math.abs(p1.y-pHC.y)+" s "+avgSquareSizeH*(i+1)+20);
                 if (Math.abs(Math.abs(p1.y-pHC.y) - avgSquareSizeH*(i+1)) < 20){
                     finalHorizontalLines.set(3-i, line);
-                    System.out.println("Cara na indexu "+j+" je na pozici "+(3-i));
+                    //System.out.println("Cara na indexu "+j+" je na pozici "+(3-i));
                     found = true;
                     break;
                 }
             }
             if (!found){
-                System.out.println("Doplnena cara na index "+(3-i));
+                //System.out.println("Doplnena cara na index "+(3-i));
                 Pair<Point, Point> newLine = new Pair(new Point(1000, pHC.y-avgSquareSizeH*(i+1)), new Point(0, pHC.y-avgSquareSizeH*(i+1)));
                 finalHorizontalLines.set(3-i, newLine);
             }
@@ -400,13 +432,13 @@ public class BoardRecognizer {
                 //System.out.println("porovnavam " +Math.abs(p1.x-p2.x)+" s "+avgSquareSize*(i+1)+20);
                 if (Math.abs(Math.abs(p1.y-pHC.y) - avgSquareSizeH*(i+1)) < 20){
                     finalHorizontalLines.set(5+i, line);
-                    System.out.println("Cara na indexu "+j+" je na pozici "+(5+i));
+                    //System.out.println("Cara na indexu "+j+" je na pozici "+(5+i));
                     found = true;
                     break;
                 }
             }
             if (!found){
-                System.out.println("Doplnena cara na index "+(5+i));
+                //System.out.println("Doplnena cara na index "+(5+i));
                 Pair<Point, Point> newLine = new Pair(new Point(0,pHC.y+avgSquareSizeH*(i+1)), new Point(1000,pHC.y+avgSquareSizeH*(i+1)));
                 finalHorizontalLines.set(5+i, newLine);
             }
@@ -464,7 +496,7 @@ public class BoardRecognizer {
         rectangles.removeAll(toRemove);
 
 
-        System.out.println("POCET CTVERCU JE " + rectangles.size());
+        //System.out.println("POCET CTVERCU JE " + rectangles.size());
         Random rng = new Random(12345);
         for(Rect rect : rectangles){
             Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
@@ -537,10 +569,16 @@ public class BoardRecognizer {
         image = resize(image);
         original = image;
 
+        //show("original",original, false);
+
         image = preRectification(image);
         rectified = image;
 
+        //show("rectified",rectified, false);
+
         image = autoCannyDetection(image);
+
+        show("canny", image, false);
 
         BoardLines allLines = detectLines(image);
 
