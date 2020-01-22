@@ -718,11 +718,14 @@ public class Main {
 //        cap.release();
 
 
-        for(int i = 72; i<73; i++){
-            Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+        for(int i = 1; i<4; i++){
+            //Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+            String dir = System.getProperty("user.dir");
+            System.out.println(dir);
+            Mat totalOriginal = imread(dir+"/src/main/resources/"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
             Mat toSave = totalOriginal.clone();
             recognizer.processImage(totalOriginal );
-            imwrite("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", toSave);
+            //imwrite("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", toSave);
         }
 
 

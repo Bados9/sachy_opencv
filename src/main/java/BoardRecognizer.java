@@ -569,12 +569,12 @@ public class BoardRecognizer {
         image = resize(image);
         original = image;
 
-        //show("original",original, false);
+        show("original",original, false);
 
         image = preRectification(image);
         rectified = image;
 
-        //show("rectified",rectified, false);
+        show("rectified",rectified, false);
 
         image = autoCannyDetection(image);
 
@@ -586,9 +586,9 @@ public class BoardRecognizer {
 
         show("BoardDetected",selectedLines.frame, false);
 
-        ArrayList<Rect> squares = findSquares(rectified, selectedLines,true);
+        //ArrayList<Rect> squares = findSquares(rectified, selectedLines,true);
 
-        cutSquares(rectified, squares);
+        //cutSquares(rectified, squares);
 
     }
 
