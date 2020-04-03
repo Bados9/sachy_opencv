@@ -3,10 +3,9 @@ import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.*;
 
-import static org.opencv.calib3d.Calib3d.convertPointsToHomogeneous;
+import static java.lang.Math.*;
 import static org.opencv.calib3d.Calib3d.findHomography;
 import static org.opencv.highgui.HighGui.imshow;
 import static org.opencv.highgui.HighGui.waitKey;
@@ -261,6 +260,8 @@ public class BoardRecognizer {
         });
 
         BoardLines ret = new BoardLines(verticalLines, horizontalLines, mHough);
+
+        show("lines", mHough, false);
         return ret;
     }
 
@@ -449,7 +450,7 @@ public class BoardRecognizer {
         }
 
 
-        //show("test", rectifiedWLines);
+        show("test", rectifiedWLines, false);
         BoardLines ret = new BoardLines(finalVerticalLines, finalHorizontalLines, rectifiedWLines);
 
         return ret;
@@ -550,9 +551,9 @@ public class BoardRecognizer {
 
             Mat squareCut = totalOriginal.submat(square);
             result.add(squareCut);
-            show("square_"+i, squareCut, true);
+            //show("square_"+i, squareCut, true);
             int index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/test").list()).length;
-            imwrite("D:/School/2MIT/DP/data/test/square_"+index+".jpg",squareCut);
+            //imwrite("D:/School/2MIT/DP/data/test/square_"+index+".jpg",squareCut);
         }
         /*for (List<Rect> row : rows) {
             for(Rect square : row){
@@ -570,8 +571,12 @@ public class BoardRecognizer {
         original = image;
 
         show("original",original, false);
+        Mat clone = new Mat();
+        clone = preProcess(image);
 
-        image = preRectification(image);
+
+
+        /*image = preRectification(image);
         rectified = image;
 
         show("rectified",rectified, false);
@@ -581,16 +586,81 @@ public class BoardRecognizer {
         show("canny", image, false);
 
         BoardLines allLines = detectLines(image);
-
+        show("firstMethod", allLines.frame, false);*/
+/*
         BoardLines selectedLines = selectLines(allLines);
 
         show("BoardDetected",selectedLines.frame, false);
 
-        //ArrayList<Rect> squares = findSquares(rectified, selectedLines,true);
+        ArrayList<Rect> squares = findSquares(rectified, selectedLines,true);
 
-        //cutSquares(rectified, squares);
-
+        cutSquares(rectified, squares);
+*/
     }
+
+    private Mat preProcess(Mat image) {
+        Mat laplace = new Mat();
+        Mat sobelX = new Mat();
+        Mat sobelY = new Mat();
+
+        image = preRectification(image);
+        rectified = image.clone();
+
+        Laplacian(image, laplace, 0);
+        //Sobel(image, sobelX, 0, 1, 0, 3);
+        //Sobel(image, sobelY, 0, 0, 1, 3);
+
+        show("laplace", laplace, false);
+        //show("sobelX", sobelX, false);
+        //show("sobelY", sobelY, false);
+
+        BoardLines allLines = houghTest(laplace);
+        //BoardLines selectedLines = selectLines(allLines);
+        //show("finish", selectedLines.frame, false);
+        return laplace;
+    }
+
+    public BoardLines houghTest(Mat image){
+        Mat dst = image.clone(); Mat cdst = new Mat();
+        Mat lines = new Mat(); // will hold the results of the detection
+
+        Imgproc.Canny(dst, dst, 50, 200, 3, false);
+        Imgproc.cvtColor(dst, cdst, Imgproc.COLOR_GRAY2BGR);
+
+        Mat linesP = new Mat(); // will hold the results of the detection
+        //Imgproc.HoughLinesP(dst, linesP, 0.7, Math.PI/280, 200, 150, 100); // runs the actual detection
+        Imgproc.HoughLinesP(dst, linesP, 0.85, Math.PI/280, 190, 150, 100); // runs the actual detection
+
+        // Draw the lines
+        ArrayList<Pair<Point, Point>> verticalLines = new ArrayList<>();
+        ArrayList<Pair<Point, Point>> horizontalLines = new ArrayList<>();
+
+        for (int x = 0; x < linesP.rows(); x++) {
+            double[] l = linesP.get(x, 0);
+            double tx = l[2] - l[0];
+            double ty = l[3] - l[1];
+            double vecLength = sqrt(pow(tx,2)+pow(ty,2));
+            tx /= vecLength;
+            ty /= vecLength;
+            if (abs(abs(tx)-abs(ty))<0.5){
+                System.out.println("vektor = ("+ tx + "," + ty +") -- je křivá");
+                Imgproc.line(cdst, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar(0, 255, 255), 3, Imgproc.LINE_AA, 0);
+            } else if (abs(tx) > abs(ty)) {
+                System.out.println("vektor = ("+ tx + "," + ty +") -- je horizontální");
+                Imgproc.line(cdst, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar(0, 255, 0), 3, Imgproc.LINE_AA, 0);
+                horizontalLines.add(new Pair<>(new Point(l[0],l[1]), new Point(l[2],l[3])));
+            } else {
+                System.out.println("vektor = ("+ tx + "," + ty +") -- je vertikální");
+                Imgproc.line(cdst, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
+                verticalLines.add(new Pair<>(new Point(l[0],l[1]), new Point(l[2],l[3])));
+            }
+        }
+        show("secondMethod" , cdst, false);
+        System.out.println("mame " + linesP.rows() + " car");
+
+        return new BoardLines(verticalLines,horizontalLines,cdst);
+    }
+
 
     public void processFrame(Mat frame, int seq){
         cvtColor(frame, frame, COLOR_BGR2GRAY);
