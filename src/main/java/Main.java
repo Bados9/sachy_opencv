@@ -716,9 +716,12 @@ public class Main {
 //        }
 //        cap.release();
 
+        for(int i = 1; i<25; i++){
+            //Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+            //Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/v2/X"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+            Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/v3/"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
 
-        for(int i = 1; i<20; i++){
-            Mat totalOriginal = imread("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", Imgcodecs.IMREAD_GRAYSCALE);
+            //Mat totalOriginal = imread("D:/School/2MIT/DP/cislovani/2.jpg", Imgcodecs.IMREAD_GRAYSCALE);
             String dir = System.getProperty("user.dir");
             System.out.println(dir);
             //Mat totalOriginal = imread("D:/School/2MIT/DP/side_3.jpg", IMREAD_GRAYSCALE);
@@ -726,6 +729,7 @@ public class Main {
             Mat toSave = totalOriginal.clone();
             recognizer.processImage(totalOriginal);
             //imwrite("D:/School/2MIT/DP/picsForDataset/X"+i+".jpg", toSave);
+            //imwrite("D:/School/2MIT/DP/picsForDataset/v2/X"+i+".jpg", toSave);
         }
 
 

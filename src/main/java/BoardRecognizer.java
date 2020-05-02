@@ -48,77 +48,77 @@ public class BoardRecognizer {
         if (save){
             int key = waitKey(0);
             //System.out.println("zmacknuto bylo "+key);
+            //int asdf = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/xv2/").list()).length;
+
+            //imwrite("D:/School/2MIT/DP/data/xv2/" + asdf + ".jpg", image);
             int index;
             switch(key){
                 case 98:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_king").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_king/white_king." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/white_king").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/white_king/white_king." + index + ".jpg", image);
                     //System.out.println("na fotce je bily kral");
                     break;
                 case 50:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_king").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_king/black_king." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/black_king").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/black_king/black_king." + index + ".jpg", image);
                     //System.out.println("na foce je cerny kral");
                     break;
-                case 99: //prvnich 30 obrazku bez kralovny --doplnit
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_queen").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_queen/white_queen." + index + ".jpg", image);
+                case 99:
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/white_queen").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/white_queen/white_queen." + index + ".jpg", image);
                     break;
                 case 51:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_queen").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_queen/black_queen." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/black_queen").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/black_queen/black_queen." + index + ".jpg", image);
                     //System.out.println("na foce je cerna kralovna");
                     break;
                 case 97:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_pawn").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_pawn/white_pawn." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/white_pawn").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/white_pawn/white_pawn." + index + ".jpg", image);
                     //System.out.println("na fotce je bily pesak");
                     break;
                 case 49:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_pawn").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_pawn/black_pawn." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/black_pawn").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/black_pawn/black_pawn." + index + ".jpg", image);
                     //System.out.println("na foce je cerny pesak");
                     break;
                 case 101:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_knight").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_knight/white_knight." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/white_knight").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/white_knight/white_knight." + index + ".jpg", image);
                     //System.out.println("na fotce je bily kun");
                     break;
                 case 53:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_knight").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_knight/black_knight." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/black_knight").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/black_knight/black_knight." + index + ".jpg", image);
                     //System.out.println("na foce je cerny kun");
                     break;
                 case 100:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_bishop").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_bishop/white_bishop." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/white_bishop").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/white_bishop/white_bishop." + index + ".jpg", image);
                     //System.out.println("na fotce je bily strelec");
                     break;
                 case 52:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_bishop").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_bishop/black_bishop." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/black_bishop").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/black_bishop/black_bishop." + index + ".jpg", image);
                     //System.out.println("na foce je cerny strelec");
                     break;
                 case 102:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_rook").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_rook/white_rook." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/white_rook").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/white_rook/white_rook." + index + ".jpg", image);
                     //System.out.println("na fotce je bila vez");
                     break;
                 case 54:
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_rook").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_rook/black_rook." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/black_rook").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/black_rook/black_rook." + index + ".jpg", image);
                     //System.out.println("na foce je cerna vez");
                     break;
                 case 10: //enter
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/white_empty").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/white_empty/white_empty." + index + ".jpg", image);
-                    //System.out.println("policko je prazdne");
-                    break;
                 case 32: //mezernik
-                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/black_empty").list()).length;
-                    imwrite("D:/School/2MIT/DP/data/black_empty/black_empty." + index + ".jpg", image);
+                    index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data_one_empty/empty").list()).length;
+                    imwrite("D:/School/2MIT/DP/data_one_empty/empty/empty." + index + ".jpg", image);
                     //System.out.println("policko je prazdne");
                     break;
+                //System.out.println("policko je prazdne");
                 default : //neukladat
                     break;
             }
@@ -551,7 +551,7 @@ public class BoardRecognizer {
 
             Mat squareCut = totalOriginal.submat(square);
             result.add(squareCut);
-            //show("square_"+i, squareCut, true);
+            show("square_"+i, squareCut, false);
             int index = Objects.requireNonNull(new File("D:/School/2MIT/DP/data/test").list()).length;
             //imwrite("D:/School/2MIT/DP/data/test/square_"+index+".jpg",squareCut);
         }
@@ -573,7 +573,9 @@ public class BoardRecognizer {
         show("original",original, false);
         Mat clone = new Mat();
         clone = preProcess(image);
-
+        if (clone == null){
+            return;
+        }
 
 
         /*image = preRectification(image);
@@ -600,24 +602,83 @@ public class BoardRecognizer {
 
     private Mat preProcess(Mat image) {
         Mat laplace = new Mat();
-        Mat sobelX = new Mat();
-        Mat sobelY = new Mat();
 
         image = preRectification(image);
+
         rectified = image.clone();
 
+        Mat imageForCutting = image.clone();
+
         Laplacian(image, laplace, 0);
-        //Sobel(image, sobelX, 0, 1, 0, 3);
-        //Sobel(image, sobelY, 0, 0, 1, 3);
 
         show("laplace", laplace, false);
-        //show("sobelX", sobelX, false);
-        //show("sobelY", sobelY, false);
 
         BoardLines allLines = houghTest(laplace);
-        //BoardLines selectedLines = selectLines(allLines);
-        //show("finish", selectedLines.frame, false);
+
+        ArrayList<Rect> squares = createSquares(allLines);
+
+        if (squares == null){
+            System.out.println("malo ctvercu");
+            return null;
+        }
+
+        cutSquares2(imageForCutting, squares);
+
         return laplace;
+    }
+
+    private ArrayList<Mat> cutSquares2(Mat totalOriginal, ArrayList<Rect> rectangleContours) {
+        ArrayList<Mat> result = new ArrayList<>();
+        int i = 0;
+        for(Rect square: rectangleContours){
+            i++;
+            square.x-=10;
+            square.width+=20;
+            square.height+=10;
+
+            if (i>32){
+                square.y-=square.height*0.8;
+                square.height*=1.8;
+            } else {
+                square.y-=square.height/2;
+                square.height*=1.5;
+            }
+
+            Mat squareCut = totalOriginal.submat(square);
+            result.add(squareCut);
+            //show("square_"+i, squareCut, false);
+        }
+        return result;
+    }
+
+    public ArrayList<Rect> createSquares(BoardLines lines){
+        List<MatOfPoint> contours = new ArrayList<>();
+        ArrayList<Rect> rectangles = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(lines.frame, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        for (int i = 0; i < contours.size(); i++) {
+            Rect r = boundingRect(contours.get(i));
+            if (r.width > 200 || r.height > 200){
+                continue;
+            }
+            rectangles.add(r);
+        }
+
+        Random rng = new Random(12345);
+        for(Rect rect : rectangles){
+            Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+            rectangle(rectified, new Point(rect.x, rect.y), new Point(rect.x+rect.width, rect.y+rect.height), color, -1);
+        }
+
+        show("rectangles new", rectified, false);
+
+        if(rectangles.size() == 64){
+            return rectangles;
+        } else {
+            return rectangles; //todo asi pres vyjimky
+        }
+
     }
 
     public BoardLines houghTest(Mat image){
@@ -631,7 +692,6 @@ public class BoardRecognizer {
         //Imgproc.HoughLinesP(dst, linesP, 0.7, Math.PI/280, 200, 150, 100); // runs the actual detection
         Imgproc.HoughLinesP(dst, linesP, 0.85, Math.PI/280, 190, 150, 100); // runs the actual detection
 
-        // Draw the lines
         ArrayList<Pair<Point, Point>> verticalLines = new ArrayList<>();
         ArrayList<Pair<Point, Point>> horizontalLines = new ArrayList<>();
 
@@ -643,24 +703,220 @@ public class BoardRecognizer {
             tx /= vecLength;
             ty /= vecLength;
             if (abs(abs(tx)-abs(ty))<0.5){
-                System.out.println("vektor = ("+ tx + "," + ty +") -- je křivá");
-                Imgproc.line(cdst, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar(0, 255, 255), 3, Imgproc.LINE_AA, 0);
+                //System.out.println("vektor = ("+ tx + "," + ty +") -- je křivá");
             } else if (abs(tx) > abs(ty)) {
-                System.out.println("vektor = ("+ tx + "," + ty +") -- je horizontální");
-                Imgproc.line(cdst, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar(0, 255, 0), 3, Imgproc.LINE_AA, 0);
+                //System.out.println("vektor = ("+ tx + "," + ty +") -- je horizontální");
                 horizontalLines.add(new Pair<>(new Point(l[0],l[1]), new Point(l[2],l[3])));
             } else {
-                System.out.println("vektor = ("+ tx + "," + ty +") -- je vertikální");
-                Imgproc.line(cdst, new Point(l[0], l[1]), new Point(l[2], l[3]), new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
+                //System.out.println("vektor = ("+ tx + "," + ty +") -- je vertikální");
                 verticalLines.add(new Pair<>(new Point(l[0],l[1]), new Point(l[2],l[3])));
             }
         }
-        show("secondMethod" , cdst, false);
-        System.out.println("mame " + linesP.rows() + " car");
 
-        return new BoardLines(verticalLines,horizontalLines,cdst);
+        horizontalLines = removeDuplicates(horizontalLines, 0);
+        verticalLines = removeDuplicates(verticalLines, 1);
+
+        horizontalLines = correctLines(horizontalLines, 0);
+        verticalLines = correctLines(verticalLines, 1);
+
+        for (Pair<Point, Point> line: horizontalLines) {
+            horizontalLines.set(horizontalLines.indexOf(line),extendLine(line, 0));
+        }
+
+        for (Pair<Point, Point> line: verticalLines) {
+            verticalLines.set(verticalLines.indexOf(line),extendLine(line, 1));
+        }
+
+        Mat ret = new Mat(cdst.rows(), cdst.cols(), CvType.CV_8U);
+        ret.setTo(new Scalar(0,0,0));
+
+        for (Pair<Point,Point> line: horizontalLines){
+            Imgproc.line(cdst, line.getKey(), line.getValue(), new Scalar(0, 255, 0), 3, Imgproc.LINE_AA, 0);
+            Imgproc.line(ret, line.getKey(), line.getValue(), new Scalar(255, 0, 0), 3, Imgproc.LINE_AA, 0);
+
+        }
+
+        for (Pair<Point,Point> line: verticalLines){
+            Imgproc.line(cdst, line.getKey(), line.getValue(), new Scalar(0, 0, 255), 3, Imgproc.LINE_AA, 0);
+            Imgproc.line(ret, line.getKey(), line.getValue(), new Scalar(255, 0, 0), 3, Imgproc.LINE_AA, 0);
+
+        }
+
+        show("secondMethod" , cdst, false);
+
+        //show ("blackandwhite", ret, false);
+        return new BoardLines(verticalLines,horizontalLines,ret);
     }
 
+    public ArrayList<Pair<Point, Point>> correctLines(ArrayList<Pair<Point, Point>> array, int direction){
+        if (direction == 0){ //horizontalni
+            ArrayList<Double> distances = new ArrayList<>();
+            ArrayList<Integer> forRemoval = new ArrayList<>();
+
+            for (int i = 0; i<array.size()-1; i++){
+                double distance = array.get(i+1).getKey().y - array.get(i).getKey().y;
+                distances.add(distance);
+                if (i < array.size()/2 && distance < 50){
+                    forRemoval.add(i);
+                } else if (i >= array.size()/2 && distance <50){
+                    forRemoval.add(i+1);
+                }
+            }
+            for(int i = forRemoval.size()-1; i>=0; i--){
+                array.remove(forRemoval.get(i).intValue());
+            }
+
+            for (int i = 0; i<8; i++){
+                double expectedPositionY = array.get(array.size()-1-i).getKey().y - 80;
+                if (array.size()-2-i < 0){
+                    Point point1 = new Point(array.get(0).getKey().x, expectedPositionY);
+                    Point point2 = new Point(array.get(0).getValue().x, expectedPositionY);
+                    Pair<Point, Point> line = new Pair<>(point1, point2);
+                    array.add(0, line);
+                    i=0;
+                } else {
+                    if (expectedPositionY - array.get(array.size() - 2 - i).getKey().y > 30) {
+                        double wantedPosition = array.get(array.size() - 2 - i).getKey().y + array.get(array.size() - 1 - i).getKey().y;
+                        wantedPosition /= 2;
+                        Point point1 = new Point(array.get(0).getKey().x, wantedPosition);
+                        Point point2 = new Point(array.get(0).getValue().x, wantedPosition);
+                        Pair<Point, Point> line = new Pair<>(point1, point2);
+                        array.add(array.size()-1-i, line);
+                        i = 0;
+                    }
+                }
+            }
+
+        } else { //vertikalni
+            ArrayList<Double> distances = new ArrayList<>();
+            ArrayList<Integer> forRemoval = new ArrayList<>();
+
+            for (int i = 0; i<array.size()-1; i++){
+                double distance = array.get(i+1).getKey().x - array.get(i).getKey().x;
+                distances.add(distance);
+                if (i < array.size()/2 && distance < 50){
+                    forRemoval.add(i);
+                } else if (i >= array.size()/2 && distance <50){
+                    forRemoval.add(i+1);
+                }
+            }
+            for(int i = forRemoval.size()-1; i>=0; i--){
+                array.remove(forRemoval.get(i).intValue());
+            }
+
+            int middleIndex = 4;
+            for (int i = 0; i<array.size(); i++){
+                if (abs(array.get(i).getKey().x - 400) < 40){
+                    middleIndex = i;
+                }
+            }
+
+            double expectedPositionX = 0.0;
+            for (int i = 0; i<4; i++){ //leva strana
+                expectedPositionX = (array.get(middleIndex-i).getKey().y < 500) ? (array.get(middleIndex-i).getKey().x - 80) : (array.get(middleIndex-i).getValue().x -80);
+                if (middleIndex-i-1 < 0){
+                    Point point1 = new Point(expectedPositionX, array.get(middleIndex).getKey().y);
+                    Point point2 = new Point(expectedPositionX, array.get(middleIndex).getValue().y);
+                    Pair<Point, Point> line = new Pair<>(point1, point2);
+                    array.add(0, line);
+                    middleIndex +=1;
+                    i=0;
+                }
+            }
+
+            for (int i = 0; i<4; i++){ //prava strana
+                expectedPositionX = (array.get(middleIndex-i).getKey().y < 500) ? (array.get(middleIndex+i).getKey().x + 80) : (array.get(middleIndex+i).getValue().x + 80);
+                if (middleIndex+i+1 > array.size()-1){
+                    Point point1 = new Point(expectedPositionX, array.get(middleIndex).getKey().y);
+                    Point point2 = new Point(expectedPositionX+5, array.get(middleIndex).getValue().y);
+                    Pair<Point, Point> line = new Pair<>(point1, point2);
+                    array.add(array.size(), line);
+                    i=0;
+                }
+            }
+        }
+
+        return array;
+    }
+
+    public Pair<Point, Point> extendLine(Pair<Point, Point> line, int direction){ //horizontální 0-800, vertikální 100-800
+        //TODO možná pomůže že nebudou až do kraje
+        Point referencePoint = line.getValue();
+        Pair<Point, Point> finalLine = new Pair<>(new Point(), new Point());
+
+        double tx = line.getKey().x- line.getValue().x;
+        double ty = line.getKey().y - line.getValue().y;
+        double vecLength = sqrt(pow(tx,2)+pow(ty,2));
+        tx /= vecLength;
+        ty /= vecLength;
+        //System.out.println("vektor: " + tx + " " + ty);
+        if (direction == 0){ //horizontal
+            double valY = referencePoint.x*ty;
+            finalLine.getKey().x = 0;
+            finalLine.getKey().y = referencePoint.y + valY;
+
+            valY = (800-referencePoint.x)*ty;
+            finalLine.getValue().x = 800;
+            finalLine.getValue().y = referencePoint.y + valY;
+        } else { //vertical
+            double valX = referencePoint.y*tx;
+            finalLine.getKey().x = referencePoint.x + valX;
+            finalLine.getKey().y = 100;
+
+            valX = (800-referencePoint.y)*tx;
+            finalLine.getValue().x = referencePoint.x+valX;
+            finalLine.getValue().y = 800;
+        }
+        return finalLine;
+    }
+
+    public ArrayList<Pair<Point, Point>> removeDuplicates(ArrayList<Pair<Point, Point>> array, int direction){
+        if (direction == 0){ //horizontalni
+            array.sort((l1,l2) -> {
+                if (l1.getKey().y == l2.getKey().y) return 0;
+                return l1.getKey().y > l2.getKey().y ? 1 : -1;
+            });
+            ArrayList<Integer> forRemoval = new ArrayList<>();
+            //System.out.println("mame " + array.size() + " horizontalnich car");
+
+            for (int i = 0; i<array.size()-1; i++){
+                if (abs(array.get(i).getKey().y - array.get(i+1).getKey().y) < 10){
+                    //System.out.println("cara na indexu " + (i+1) + "presunuta k vymazani");
+                    forRemoval.add(i+1);
+                }
+            }
+            for(int i = forRemoval.size()-1; i>=0; i--){
+                array.remove(forRemoval.get(i).intValue());
+            }
+
+            for (Pair<Point, Point> line: array) {
+                //System.out.println("Y = "+line.getKey().y);
+            }
+        } else { //vertikalni
+            array.sort((l1,l2) -> {
+                if (l1.getKey().x == l2.getKey().x) return 0;
+                return l1.getKey().x > l2.getKey().x ? 1 : -1;
+            });
+            ArrayList<Integer> forRemoval = new ArrayList<>();
+            //System.out.println("mame " + array.size() + " vertikalnich car");
+            for (int i = 0; i<array.size()-1; i++){
+                if (abs(array.get(i).getKey().x - array.get(i+1).getKey().x) < 10){
+                    //System.out.println("cara na indexu " + (i+1) + "presunuta k vymazani");
+                    forRemoval.add(i+1);
+                }
+            }
+            for(int i = forRemoval.size()-1; i>=0; i--){
+                array.remove(forRemoval.get(i).intValue());
+            }
+            for (Pair<Point, Point> line: array) {
+                //System.out.println("X = "+line.getKey().x);
+            }
+        }
+        //System.out.println("zbylo nam " + array.size() + " car");
+
+
+        return array;
+    }
 
     public void processFrame(Mat frame, int seq){
         cvtColor(frame, frame, COLOR_BGR2GRAY);
